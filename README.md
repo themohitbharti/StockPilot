@@ -25,4 +25,23 @@ The Simple Product Management API is a RESTful service built using Node.js and E
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/simple-product-management-api.git
+   git clone https://github.com/themohitbharti/StockPilot.git
+
+2. **Navigate to the project directory:**
+
+   ```bash
+   cd StockPilot
+
+3. **Install dependencies::**
+
+   ```bash
+   npm install
+
+4. **Set up environment variables:**
+
+
+
+5. **Start the server:**
+
+   ```bash
+   npm run start
