@@ -1,4 +1,4 @@
-# StockPilot - Simple Product Management API
+# StockPilot - Product Management APP
 
 ## Description
 
