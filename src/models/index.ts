@@ -2,7 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { Sequelize, DataTypes, Options } from 'sequelize';
 import process from 'process';
-import config from '../config/config';
+// import config from '../config/config';
+const config = require('../config/config.js');
+import Product from './product';
 
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
@@ -10,32 +12,25 @@ const db: any = {};
 
 export let sequelize: Sequelize;
 
-// Retrieve the current environment's configuration
 const currentConfig = config[env];
 
-
 if (currentConfig.use_env_variable) {
-  // Retrieve the database URL from the environment variable
   const dbUrl = process.env[currentConfig.use_env_variable];
 
-
-  // Check if the database URL is valid
   if (!dbUrl) {
     throw new Error(`Database URL not found for environment variable: ${currentConfig.use_env_variable}`);
   }
 
-  // Use the URI from the environment variable
   sequelize = new Sequelize(dbUrl, {
     dialect: currentConfig.dialect as Options['dialect'],
-    logging: false, // Optional: turn off logging if not needed
+    logging: false,
   });
 } else {
-  // Use the traditional method to initialize with database details
   sequelize = new Sequelize(currentConfig.database, currentConfig.username, currentConfig.password, {
     host: currentConfig.host,
     dialect: currentConfig.dialect as Options['dialect'],
     port: currentConfig.port,
-    logging: false, // Optional: turn off logging if not needed
+    logging: false,
   });
 }
 
@@ -53,7 +48,7 @@ const initModels = async () => {
 
   for (const file of modelFiles) {
     const { default: model } = await import(path.join(__dirname, file));
-    const initializedModel = model(sequelize, DataTypes);
+    const initializedModel = model(sequelize);
     db[initializedModel.name] = initializedModel;
   }
 
@@ -64,12 +59,13 @@ const initModels = async () => {
   });
 };
 
-// Call initModels() to initialize models dynamically
-initModels().then(() => {
-  console.log('Models initialized successfully');
-}).catch((err) => {
-  console.error('Error initializing models:', err);
-});
+initModels()
+  .then(() => {
+    console.log('Models initialized successfully');
+  })
+  .catch((err) => {
+    console.error('Error initializing models:', err);
+  });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

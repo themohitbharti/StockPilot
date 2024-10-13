@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon --exec ts-node src/seeders/index.ts"
+    "dev": "nodemon --exec ts-node src/seeders/index.ts",
+    "migrate": "ts-node -r tsconfig-paths/register ./node_modules/.bin/sequelize-cli db:migrate"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
     "nodemon": "^3.1.7",
     "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.3"
   }
 }
