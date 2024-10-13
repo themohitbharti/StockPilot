@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import { asyncHandler } from '../utils/asyncHandler';
 import db from '../models';
+import { Op } from 'sequelize';
 
 const Product = db.Product;
 
@@ -28,19 +29,49 @@ export const createProduct = asyncHandler(async (req: Request, res: Response) =>
 
 
 export const getProducts = asyncHandler(async (req: Request, res: Response) => {
-    try {
-        const products = await Product.findAll();
+    const { page = 1, limit = 10, search } = req.query; // Get query parameters
 
-        if (products.length === 0) {
+    const pageNumber = Number(page);
+    const pageSize = Number(limit);
+    const offset = (pageNumber - 1) * pageSize;
+
+    if (pageNumber < 1 || pageSize < 1) {
+        return res.status(400).json({ success: false, message: 'Page and limit must be positive numbers.' });
+    }
+
+    try {
+        const whereClause: any = {};
+        if (search) {
+            whereClause[Op.or] = [
+                { name: { [Op.iLike]: `%${search}%` } },
+                { category: { [Op.iLike]: `%${search}%` } },
+            ];
+        }
+
+        const { count, rows } = await Product.findAndCountAll({
+            where: whereClause,
+            limit: pageSize,
+            offset: offset,
+        });
+
+        if (rows.length === 0) {
             return res.status(404).json({ success: false, message: 'No products found.' });
         }
 
-        res.status(200).json({ success: true, products });
+        res.status(200).json({
+            success: true,
+            products: rows,
+            totalProducts: count,
+            currentPage: pageNumber,
+            totalPages: Math.ceil(count / pageSize),
+        });
     } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).json({ success: false, message: 'An error occurred while fetching products. Please try again later.' });
     }
 });
+
+
 
 export const getProductById = asyncHandler(async (req: Request, res: Response) => {
     const productId = req.params.id;
