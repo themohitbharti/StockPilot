@@ -1,4 +1,4 @@
-// src/models/product.ts
+
 import { Sequelize, DataTypes, Model } from 'sequelize';
 
 export default (sequelize: Sequelize) => {
