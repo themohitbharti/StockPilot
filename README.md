@@ -46,9 +46,5 @@ The Simple Product Management API is a RESTful service built using Node.js and E
    ```bash
    npm run start
 
-## Postman Documentation
-
-You can find the Postman documentation for the StockPilot API [[https://www.postman.com/your-postman-documentation-link](https://documenter.getpostman.com/view/30375049/2sAXxS9C3A)].
-
 I hope you find this Project Interesting!
 
